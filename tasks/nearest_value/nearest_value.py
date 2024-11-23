@@ -1,6 +1,7 @@
 import numpy as np
 import numpy.typing as npt
 
+
 def nearest_value(matrix: npt.NDArray[np.float64], value: float) -> float | None:
     """
     Find closest value in matrix.

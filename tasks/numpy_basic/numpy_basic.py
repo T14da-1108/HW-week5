@@ -21,6 +21,7 @@ def construct_array(
         raise TypeError("matrix must be a NumPy array.")
     return matrix[row_indices, col_indices]
 
+
 def detect_identical(
         lhs_array: npt.ArrayLike,
         rhs_array: npt.ArrayLike
@@ -40,6 +41,7 @@ def detect_identical(
         raise TypeError("Both inputs must be NumPy arrays.")
     return np.array_equal(lhs_array, rhs_array)
 
+
 def mean_channel(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
     """
     Given color image (3-dimensional vector of size (n, m, 3).
@@ -55,6 +57,7 @@ def mean_channel(x: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         return np.array([np.nan, np.nan, np.nan])
 
     return np.mean(x, axis=(0, 1))
+
 
 def get_unique_rows(x: npt.NDArray[np.int_]) -> npt.NDArray[np.int_]:
     """
