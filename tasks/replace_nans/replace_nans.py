@@ -14,7 +14,7 @@ def replace_nans(data_matrix: npt.NDArray[np.float64]) -> npt.NDArray[np.float64
         return data_matrix
 
     # Calculate the mean of all non-NaN elements
-    mean_value = np.nanmean(data_matrix)
+    mean_value: float = float(np.nanmean(data_matrix))
 
     # If the mean is NaN (i.e., the entire matrix was NaN), replace with 0
     if np.isnan(mean_value):
