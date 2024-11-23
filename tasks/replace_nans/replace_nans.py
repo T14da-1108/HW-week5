@@ -35,8 +35,6 @@ def replace_nans(data_matrix: npt.NDArray[np.float64]) -> npt.NDArray[np.float64
 
     return output_matrix
 
-import numpy as np
-
 # Sample input matrix
 input_matrix = np.array([[1, 2, np.nan], [4, np.nan, 6], [7, 8, 9]], dtype=np.float64)
 expected_result = np.array([[1, 2, 4], [4, 5, 6], [7, 8, 9]], dtype=np.float64)
