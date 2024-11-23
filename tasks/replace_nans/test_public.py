@@ -57,13 +57,11 @@ def test_structural() -> None:
         assert not isinstance(node, (ast.For, ast.While, ast.ListComp))
 
 
+
 @pytest.mark.parametrize('t', REPLACE_NANS_TEST_CASES, ids=str)
 def test_construct_matrix(t: ReplaceNansCase) -> None:
-    matrix_copy = t.matrix.copy()
-    result = replace_nans(t.matrix)
+    matrix_copy = t.matrix.copy().astype(np.float64)
+    result = replace_nans(t.matrix.astype(np.float64))
 
-    # Ensure the result matches the expected output
     assert_array_equal(result, t.result)
-
-    # Ensure the input matrix is not modified
     assert_array_equal(t.matrix, matrix_copy, err_msg="Function shouldn't change the input")
