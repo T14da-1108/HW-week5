@@ -10,34 +10,30 @@ def replace_nans(matrix: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
     :param matrix: Input matrix (2D array).
     :return: A new matrix with NaN values replaced.
     """
+
     if matrix.size == 0:
-        return matrix  # Return the empty matrix as is
+        return matrix
 
-    # Copy the matrix to avoid mutating the input
     result = np.array(matrix, copy=True)
-
-    # Create a mask of NaN values
     nan_mask = np.isnan(result)
+    rows, cols = result.shape
 
-    # Identify the valid neighbors for each NaN location
-    for i in range(1, result.shape[0] - 1):
-        for j in range(1, result.shape[1] - 1):
+    for i in range(rows):
+        for j in range(cols):
             if nan_mask[i, j]:
                 neighbors = []
-                # Check the neighbors (above, below, left, right)
-                if not np.isnan(result[i - 1, j]):
-                    neighbors.append(result[i - 1, j])  # Above
-                if not np.isnan(result[i + 1, j]):
-                    neighbors.append(result[i + 1, j])  # Below
-                if not np.isnan(result[i, j - 1]):
-                    neighbors.append(result[i, j - 1])  # Left
-                if not np.isnan(result[i, j + 1]):
-                    neighbors.append(result[i, j + 1])  # Right
+                if i > 0 and not np.isnan(result[i - 1, j]):
+                    neighbors.append(result[i - 1, j])
+                if i < rows - 1 and not np.isnan(result[i + 1, j]):
+                    neighbors.append(result[i + 1, j])
+                if j > 0 and not np.isnan(result[i, j - 1]):
+                    neighbors.append(result[i, j - 1])
+                if j < cols - 1 and not np.isnan(result[i, j + 1]):
+                    neighbors.append(result[i, j + 1])
 
-                # Replace NaN with the mean of its neighbors
                 if neighbors:
                     result[i, j] = np.mean(neighbors)
                 else:
-                    result[i, j] = 0  # If no neighbors, replace with 0
+                    result[i, j] = 0
 
     return result
