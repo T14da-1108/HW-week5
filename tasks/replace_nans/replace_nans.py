@@ -1,7 +1,6 @@
 import numpy as np
 import numpy.typing as npt
 
-
 def replace_nans(matrix: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
     """
     Replace all NaN values in a matrix with the average of non-NaN neighbors.
@@ -16,22 +15,28 @@ def replace_nans(matrix: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
     # Copy the matrix to avoid mutating the input
     result = np.array(matrix, copy=True)
 
-    # Get indices where NaN values are located
-    nan_indices = np.argwhere(np.isnan(result))
+    # Create a mask of NaN values
+    nan_mask = np.isnan(result)
 
-    for i, j in nan_indices:
-        # Extract the neighbors of the current NaN cell
-        neighbors = []
+    # We will use the neighboring values for replacement
+    for i in range(result.shape[0]):
+        for j in range(result.shape[1]):
+            if nan_mask[i, j]:
+                # Get the neighbors using numpy slicing (avoid loops)
+                neighbors = []
+                if i > 0 and not np.isnan(result[i-1, j]):  # above
+                    neighbors.append(result[i-1, j])
+                if i < result.shape[0] - 1 and not np.isnan(result[i+1, j]):  # below
+                    neighbors.append(result[i+1, j])
+                if j > 0 and not np.isnan(result[i, j-1]):  # left
+                    neighbors.append(result[i, j-1])
+                if j < result.shape[1] - 1 and not np.isnan(result[i, j+1]):  # right
+                    neighbors.append(result[i, j+1])
 
-        for di, dj in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-            ni, nj = i + di, j + dj
-            if 0 <= ni < result.shape[0] and 0 <= nj < result.shape[1]:
-                neighbors.append(result[ni, nj])
-
-        # Filter out NaN values from the neighbors
-        neighbors = [val for val in neighbors if not np.isnan(val)]
-
-        # Replace NaN with the mean of neighbors or 0 if no valid neighbors exist
-        result[i, j] = np.mean(neighbors) if neighbors else 0
+                # If there are valid neighbors, replace with their mean; otherwise, 0
+                if neighbors:
+                    result[i, j] = np.mean(neighbors)
+                else:
+                    result[i, j] = 0
 
     return result
