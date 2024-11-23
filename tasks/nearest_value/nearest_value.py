@@ -21,4 +21,4 @@ def nearest_value(matrix: npt.NDArray[np.float64], value: float) -> float | None
     idx = np.argmin(diff)
 
     # Return the value at the index
-    return matrix.flat[idx]
+    return float(matrix[idx])
