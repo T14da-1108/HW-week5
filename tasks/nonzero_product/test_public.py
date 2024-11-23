@@ -19,19 +19,19 @@ class NonzeroProductCase:
 
 NONZERO_PRODUCT_TEST_CASES = [
     NonzeroProductCase(
-        matrix=np.array([[1, 0, 1], [2, 0, 2], [3, 0, 3], [4, 4, 4]]),
+        matrix=np.array([[1, 0, 1], [2, 0, 2], [3, 0, 3], [4, 4, 4]], dtype=np.int_),
         result=3
     ),
     NonzeroProductCase(
-        matrix=np.array([[0, 0, 1], [2, 0, 2], [3, 0, 0], [4, 4, 4]]),
+        matrix=np.array([[0, 0, 1], [2, 0, 2], [3, 0, 0], [4, 4, 4]], dtype=np.int_),
         result=None
     ),
     NonzeroProductCase(
-        matrix=np.array([[], [], [], []]),
+        matrix=np.array([[], [], [], []], dtype=np.int_),
         result=None
     ),
     NonzeroProductCase(
-        matrix=np.arange(24).reshape((4, 6)),
+        matrix=np.arange(24).reshape((4, 6)).astype(np.int_),
         result=2058
     ),
     NonzeroProductCase(
@@ -43,15 +43,15 @@ NONZERO_PRODUCT_TEST_CASES = [
         result=None
     ),
     NonzeroProductCase(
-        matrix=np.array([[1]]),
+        matrix=np.array([[1]], dtype=np.int_),
         result=1
     ),
     NonzeroProductCase(
-        matrix=np.array([[0]]),
+        matrix=np.array([[0]], dtype=np.int_),
         result=None
     ),
     NonzeroProductCase(
-        matrix=np.array([[1, 1, 1], [1, 0, 1], [1, 1, 1]]),
+        matrix=np.array([[1, 1, 1], [1, 0, 1], [1, 1, 1]], dtype=np.int_),
         result=1
     ),
 ]
@@ -69,4 +69,4 @@ def test_structural() -> None:
 def test_construct_matrix(t: NonzeroProductCase) -> None:
     matrix_copy = t.matrix.copy()
     assert nonzero_product(t.matrix) == t.result
-    assert_array_equal(t.matrix, matrix_copy, "Function shoudn't change the input")
+    assert_array_equal(t.matrix, matrix_copy, "Function shouldn't change the input")

@@ -8,7 +8,7 @@ import numpy.typing as npt
 import pytest
 from numpy.testing import assert_array_equal
 
-from .numpy_basic import construct_array, detect_identic, mean_channel, get_unique_rows, construct_matrix
+from .numpy_basic import construct_array, detect_identical, mean_channel, get_unique_rows, construct_matrix
 
 
 @dataclasses.dataclass
@@ -44,42 +44,42 @@ CONSTRUCT_ARRAY_TEST_CASES = [
 
 
 @dataclasses.dataclass
-class DetectIdenticCase:
+class DetectIdenticalCase:
     lhs_array: npt.ArrayLike
     rhs_array: npt.ArrayLike
     result: bool
 
 
-DETECT_IDENTIC_TEST_CASES = [
-    DetectIdenticCase(
+DETECT_IDENTICal_TEST_CASES = [
+    DetectIdenticalCase(
          lhs_array=np.array([1, 2]),
          rhs_array=np.array([1, 2]),
          result=True),
-    DetectIdenticCase(
+    DetectIdenticalCase(
          lhs_array=np.array([1., 2]),
          rhs_array=np.array([1, 2.]),
          result=True),
-    DetectIdenticCase(
+    DetectIdenticalCase(
          lhs_array=np.array([1, 2]),
          rhs_array=np.array([1.0001, 2]),
          result=False),
-    DetectIdenticCase(
+    DetectIdenticalCase(
          lhs_array=np.array([1, 2]),
          rhs_array=np.array([[1, 2]]),
          result=False),
-    DetectIdenticCase(
+    DetectIdenticalCase(
          lhs_array=np.array([[1, 2, 3]]),
          rhs_array=np.array([[1, 2]]),
          result=False),
-    DetectIdenticCase(
+    DetectIdenticalCase(
          lhs_array=np.array([]),
          rhs_array=np.array([]),
          result=True),
-    DetectIdenticCase(
+    DetectIdenticalCase(
          lhs_array=3,
          rhs_array=3,
          result=True),
-    DetectIdenticCase(
+    DetectIdenticalCase(
          lhs_array=np.array(range(3)),
          rhs_array=np.array(range(3))[np.newaxis, :],
          result=False),
@@ -152,7 +152,7 @@ CONSTRUCT_MATRIX_TEST_CASES = [
 
 
 def test_structural() -> None:
-    for function in [construct_array, detect_identic, mean_channel, get_unique_rows, construct_matrix]:
+    for function in [construct_array, detect_identical, mean_channel, get_unique_rows, construct_matrix]:
         source = inspect.getsource(function) # type: ignore[arg-type]
         tree = ast.parse(source)
         for node in ast.walk(tree):
@@ -169,13 +169,13 @@ def test_construct_array(t: ConstructArrayCase) -> None:
     assert_array_equal(t.col_indices, col_indices_copy, "Function shouldn't change the input")
 
 
-@pytest.mark.parametrize('t', DETECT_IDENTIC_TEST_CASES, ids=str)
-def test_detect_identic(t: DetectIdenticCase) -> None:
+@pytest.mark.parametrize('t', DETECT_IDENTICal_TEST_CASES, ids=str)
+def test_detect_identical(t: DetectIdenticalCase) -> None:
     lhs_array_copy: np.ndarray[Any, Any] | None = None
     rhs_array_copy: np.ndarray[Any, Any] | None = None
     if isinstance(t.lhs_array, np.ndarray) and isinstance(t.rhs_array, np.ndarray):
         lhs_array_copy, rhs_array_copy = t.lhs_array.copy(), t.rhs_array.copy()
-    assert_array_equal(detect_identic(t.lhs_array, t.rhs_array), t.result)
+    assert_array_equal(detect_identical(t.lhs_array, t.rhs_array), t.result)
     if lhs_array_copy is not None and rhs_array_copy is not None:
         assert_array_equal(t.lhs_array, lhs_array_copy, "Function shouldn't change the input")
         assert_array_equal(t.rhs_array, rhs_array_copy, "Function shouldn't change the input")
@@ -183,16 +183,16 @@ def test_detect_identic(t: DetectIdenticCase) -> None:
 
 @pytest.mark.parametrize('t', MEAN_CHANNEL_TEST_CASES, ids=str)
 def test_mean_channel(t: MeanChannelCase) -> None:
-    X_copy = t.X.copy()
+    x_copy = t.X.copy()
     assert_array_equal(mean_channel(t.X), t.result)
-    assert_array_equal(t.X, X_copy, "Function shouldn't change the input")
+    assert_array_equal(t.X, x_copy, "Function shouldn't change the input")
 
 
 @pytest.mark.parametrize('t', GET_UNIQUE_ROWS_TEST_CASES, ids=str)
 def test_get_unique_rows(t: GetUniqueRowsCase) -> None:
-    X_copy = t.X.copy()
+    x_copy = t.X.copy()
     assert_array_equal(get_unique_rows(t.X), t.result)
-    assert_array_equal(t.X, X_copy, "Function shouldn't change the input")
+    assert_array_equal(t.X, x_copy, "Function shouldn't change the input")
 
 
 @pytest.mark.parametrize('t', CONSTRUCT_MATRIX_TEST_CASES, ids=str)
