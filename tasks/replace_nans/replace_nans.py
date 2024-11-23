@@ -19,25 +19,25 @@ def replace_nans(matrix: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
     # Create a mask of NaN values
     nan_mask = np.isnan(result)
 
-    # For each element in the matrix, replace NaNs with the mean of its valid neighbors
-    rows, cols = result.shape
-    for i in range(rows):
-        for j in range(cols):
+    # Identify the valid neighbors for each NaN location
+    for i in range(1, result.shape[0] - 1):
+        for j in range(1, result.shape[1] - 1):
             if nan_mask[i, j]:
                 neighbors = []
-                if i > 0 and not np.isnan(result[i - 1, j]):  # Check above
-                    neighbors.append(result[i - 1, j])
-                if i < rows - 1 and not np.isnan(result[i + 1, j]):  # Check below
-                    neighbors.append(result[i + 1, j])
-                if j > 0 and not np.isnan(result[i, j - 1]):  # Check left
-                    neighbors.append(result[i, j - 1])
-                if j < cols - 1 and not np.isnan(result[i, j + 1]):  # Check right
-                    neighbors.append(result[i, j + 1])
+                # Check the neighbors (above, below, left, right)
+                if not np.isnan(result[i - 1, j]):
+                    neighbors.append(result[i - 1, j])  # Above
+                if not np.isnan(result[i + 1, j]):
+                    neighbors.append(result[i + 1, j])  # Below
+                if not np.isnan(result[i, j - 1]):
+                    neighbors.append(result[i, j - 1])  # Left
+                if not np.isnan(result[i, j + 1]):
+                    neighbors.append(result[i, j + 1])  # Right
 
-                # Replace with the mean of neighbors if available, otherwise 0
+                # Replace NaN with the mean of its neighbors
                 if neighbors:
                     result[i, j] = np.mean(neighbors)
                 else:
-                    result[i, j] = 0  # No valid neighbors, set to 0
+                    result[i, j] = 0  # If no neighbors, replace with 0
 
     return result
