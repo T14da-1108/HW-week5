@@ -1,6 +1,7 @@
 import numpy as np
 import numpy.typing as npt
 
+
 def replace_nans(matrix: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
     """
     Replace all NaN values in the matrix with the mean of the other values in the same column.
