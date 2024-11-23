@@ -53,7 +53,7 @@ def test_structural() -> None:
     source = inspect.getsource(replace_nans)
     tree = ast.parse(source)
 
-    for node in ast.walk(tree):
+    for node in ast.walk(tree):  # allow for loop
         assert not isinstance(node, (ast.For, ast.While, ast.ListComp))
 
 

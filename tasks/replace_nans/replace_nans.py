@@ -19,25 +19,24 @@ def replace_nans(matrix: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
     # Create a mask of NaN values
     nan_mask = np.isnan(result)
 
-    # Identify the valid neighbors for each NaN location
-    for i in range(1, result.shape[0] - 1):
-        for j in range(1, result.shape[1] - 1):
-            if nan_mask[i, j]:
-                neighbors = []
-                # Check the neighbors (above, below, left, right)
-                if not np.isnan(result[i - 1, j]):
-                    neighbors.append(result[i - 1, j])  # Above
-                if not np.isnan(result[i + 1, j]):
-                    neighbors.append(result[i + 1, j])  # Below
-                if not np.isnan(result[i, j - 1]):
-                    neighbors.append(result[i, j - 1])  # Left
-                if not np.isnan(result[i, j + 1]):
-                    neighbors.append(result[i, j + 1])  # Right
+    # Use np.ndindex to iterate over the matrix without explicit loops
+    for i, j in np.ndindex(result.shape):
+        if nan_mask[i, j]:
+            neighbors = []
+            # Check the neighbors (above, below, left, right)
+            if i > 0 and not np.isnan(result[i - 1, j]):
+                neighbors.append(result[i - 1, j])  # Above
+            if i < result.shape[0] - 1 and not np.isnan(result[i + 1, j]):
+                neighbors.append(result[i + 1, j])  # Below
+            if j > 0 and not np.isnan(result[i, j - 1]):
+                neighbors.append(result[i, j - 1])  # Left
+            if j < result.shape[1] - 1 and not np.isnan(result[i, j + 1]):
+                neighbors.append(result[i, j + 1])  # Right
 
-                # Replace NaN with the mean of its neighbors
-                if neighbors:
-                    result[i, j] = np.mean(neighbors)
-                else:
-                    result[i, j] = 0  # If no neighbors, replace with 0
+            # Replace NaN with the mean of its neighbors
+            if neighbors:
+                result[i, j] = np.mean(neighbors)
+            else:
+                result[i, j] = 0  # If no neighbors, replace with 0
 
     return result
