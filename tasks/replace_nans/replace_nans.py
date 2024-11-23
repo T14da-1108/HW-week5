@@ -1,6 +1,7 @@
 import numpy as np
 import numpy.typing as npt
 
+
 def replace_nans(matrix: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
     """
     Replace all NaN values in a matrix with the average of non-NaN neighbors.
