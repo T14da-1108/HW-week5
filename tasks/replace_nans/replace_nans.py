@@ -4,29 +4,34 @@ import numpy.typing as npt
 
 def replace_nans(matrix: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
     """
-    Replace all NaN values in the matrix with the mean of the other values in the same column.
-    If all values are NaN, return a zero matrix of the same size.
+    Replace all NaN values in a matrix with the average of non-NaN neighbors.
+    If no neighbors are available, replace with 0.
 
-    :param matrix: Input matrix with potential NaN values.
-    :return: Matrix with NaN values replaced by column means or zero matrix if all values are NaN.
+    :param matrix: Input matrix (2D array).
+    :return: A new matrix with NaN values replaced.
     """
-    # Copy the matrix to avoid modifying the input
-    result = matrix.copy()
+    if matrix.size == 0:
+        return matrix  # Return the empty matrix as is
 
-    # If the entire matrix is NaN, return a zero matrix
-    if np.isnan(result).all():
-        return np.zeros_like(result)
+    # Copy the matrix to avoid mutating the input
+    result = np.array(matrix, copy=True)
 
-    # Calculate column-wise means excluding NaNs
-    col_means = np.nanmean(result, axis=0)
+    # Get indices where NaN values are located
+    nan_indices = np.argwhere(np.isnan(result))
 
-    # If any column is entirely NaN, set its mean to 0
-    col_means[np.isnan(col_means)] = 0
+    for i, j in nan_indices:
+        # Extract the neighbors of the current NaN cell
+        neighbors = []
 
-    # Find positions where NaN values are present
-    nan_mask = np.isnan(result)
+        for di, dj in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            ni, nj = i + di, j + dj
+            if 0 <= ni < result.shape[0] and 0 <= nj < result.shape[1]:
+                neighbors.append(result[ni, nj])
 
-    # Replace NaN values with the column mean
-    result[nan_mask] = np.take(col_means, np.where(nan_mask)[1])
+        # Filter out NaN values from the neighbors
+        neighbors = [val for val in neighbors if not np.isnan(val)]
+
+        # Replace NaN with the mean of neighbors or 0 if no valid neighbors exist
+        result[i, j] = np.mean(neighbors) if neighbors else 0
 
     return result
